@@ -1,0 +1,42 @@
+name: Strato Deployment
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        
+    - name: Install Dependencies
+      run: npm ci
+      
+    - name: Build Project
+      run: npm run build
+      
+    - name: Deploy to Strato
+      env:
+        STRATO_SSH_KEY: ${{ secrets.STRATO_SSH_PRIVATE_KEY }}
+        STRATO_HOST: ${{ secrets.STRATO_HOST }}
+        STRATO_USER: ${{ secrets.STRATO_USER }}
+      run: |
+        mkdir -p ~/.ssh
+        echo "$STRATO_SSH_KEY" > ~/.ssh/strato_key
+        chmod 600 ~/.ssh/strato_key
+        
+        rsync -avz --delete \
+          -e "ssh -i ~/.ssh/strato_key -o StrictHostKeyChecking=no" \
+          ./out/ \
+          $STRATO_USER@$STRATO_HOST:/path/to/website
+        
+        ssh -i ~/.ssh/strato_key $STRATO_USER@$STRATO_HOST "pm2 restart next-app"

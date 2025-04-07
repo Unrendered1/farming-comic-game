@@ -1,8 +1,14 @@
 @import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
 }
 
 @theme inline {
@@ -16,11 +22,116 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
   }
 }
 
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
 body {
+  position: relative;
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+/* Background Image with Blur */
+.background-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/images/farm-background.jpg');
+  background-size: cover;
+  background-position: center;
+  
+  /* Blur and opacity effects */
+  backdrop-filter: blur(20px);  /* Increased blur intensity */
+  -webkit-backdrop-filter: blur(20px);  /* For Safari support */
+  background-blend-mode: soft-light;  /* Soft blending */
+  opacity: 0.5;  /* Slightly reduced opacity for more blur effect */
+  
+  z-index: -2;
+}
+
+/* Side Bars */
+.side-bar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 5%;
+  background: rgba(255, 255, 255, 0.25);
+  z-index: -1;
+}
+
+.side-bar-left {
+  left: 0;
+}
+
+.side-bar-right {
+  right: 0;
+}
+
+/* Main content container to ensure it's above background */
+.main-content {
+  position: relative;
+  z-index: 10;
+}
+
+/* Enhanced font visibility */
+.font-comic {
+  font-family: 'Comic Neue', cursive;
+  letter-spacing: 0.5px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Improve readability for all text */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Increase contrast and visibility */
+h1, h2, h3, h4, h5, h6 {
+  color: #1a1a1a;
+  font-weight: bold;
+}
+
+p, span, div {
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Comic-style button enhancements */
+.comic-button {
+  font-family: 'Comic Neue', cursive;
+  background-color: #4CAF50;
+  color: white;
+  border: 2px solid #45a049;
+  border-radius: 8px;
+  padding: 10px 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
+}
+
+.comic-button:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
 }

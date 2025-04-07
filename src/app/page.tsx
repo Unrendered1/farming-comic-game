@@ -1,103 +1,226 @@
-import Image from "next/image";
+"use client";
+
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { 
+  FaTractor as FarmIcon, 
+  FaBook as BookIcon, 
+  FaTrophy as TrophyIcon, 
+  FaCoins as CoinsIcon, 
+  FaPlay as PlayIcon 
+} from 'react-icons/fa';
+
+import { ComicPanel } from '@/features/comic-panel/components/ComicPanel';
+import { LoginForm } from '@/features/auth/components/LoginForm';
+import { useAuthStore } from '@/features/auth/stores/authStore';
+import { ComicPanelGenerator } from '@/features/comic-panel/generators/comic-panel-generator';
+import { 
+  ComicPanelGenerationConfig, 
+  ComicPanelLayout, 
+  SpeechBubbleStyle, 
+  NarrativeStyle,
+  DialogueGenerationStrategy
+} from '@/types/comic-panel';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const { user } = useAuthStore();
+  const [activeSection, setActiveSection] = useState<'overview' | 'login'>('overview');
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  // Temporary comic panel generation config
+  const comicPanelGenerationConfig: ComicPanelGenerationConfig = {
+    templateComponents: {
+      panelLayouts: [{
+        id: 'default',
+        name: 'Standard Layout',
+        panelCount: 3,
+        gridTemplate: 'repeat(3, 1fr)',
+        styleConstraints: [
+          { type: 'layout', rule: 'grid-based' }
+        ]
+      } as ComicPanelLayout],
+      speechBubbleStyles: [{
+        type: 'speech',
+        shape: 'rounded',
+        tailPosition: 'right'
+      } as SpeechBubbleStyle],
+      narrativeStyles: [{
+        genre: 'comedy',
+        humorLevel: 7,
+        pacing: 'moderate'
+      } as NarrativeStyle]
+    },
+    aiAssistance: {
+      dialogueGeneration: {
+        contextAwareness: true,
+        humorLevel: 7,
+        characterVoicePreservation: true
+      } as DialogueGenerationStrategy,
+      colorPaletteGeneration: {
+        generationMethod: 'contextual',
+        consistencyLevel: 8
+      },
+      contentVariation: {
+        variationTypes: ['dialogue', 'layout'],
+        complexityLevel: 5
+      }
+    },
+    themeConstraints: [{
+      category: 'farming',
+      restrictionLevel: 6
+    }]
+  };
+
+  const comicPanelGenerator = new ComicPanelGenerator(comicPanelGenerationConfig);
+  const comicPanel = comicPanelGenerator.generatePanel('Farming adventure begins');
+
+  return (
+    <motion.main 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="container mx-auto px-4 py-8"
+    >
+      <div className="text-center mb-12">
+        <motion.h1 
+          initial={{ y: -50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="text-5xl font-bold text-green-700 mb-4"
+        >
+          Farming Comic Game
+        </motion.h1>
+        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          Embark on a whimsical farming adventure where creativity meets agriculture!
+        </p>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-8">
+        {/* Game Features Section */}
+        <motion.div
+          initial={{ x: -50, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="bg-white rounded-xl shadow-md p-6"
+        >
+          <h2 className="text-2xl font-semibold mb-4 text-green-600">Game Features</h2>
+          <div className="space-y-4">
+            {[
+              { 
+                icon: <FarmIcon className="text-green-500" />, 
+                title: 'Farm Management', 
+                description: 'Grow crops, manage resources, and expand your farm' 
+              },
+              { 
+                icon: <BookIcon className="text-blue-500" />, 
+                title: 'Comic Storytelling', 
+                description: 'Generate unique comic panels with AI assistance' 
+              },
+              { 
+                icon: <TrophyIcon className="text-purple-500" />, 
+                title: 'Progression System', 
+                description: 'Level up, unlock achievements, and become a farming legend' 
+              }
+            ].map((feature, index) => (
+              <motion.div 
+                key={index}
+                whileHover={{ scale: 1.05 }}
+                className="flex items-center space-x-4 p-4 bg-gray-100 rounded-lg"
+              >
+                <div className="text-3xl">{feature.icon}</div>
+                <div>
+                  <h3 className="font-bold">{feature.title}</h3>
+                  <p className="text-sm text-gray-600">{feature.description}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Comic Panel or Login Section */}
+        <motion.div
+          initial={{ x: 50, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="space-y-6"
+        >
+          {/* Toggle between Comic Panel and Login */}
+          <div className="flex justify-center space-x-4 mb-4">
+            <button 
+              onClick={() => setActiveSection('overview')}
+              className={`px-4 py-2 rounded-md transition-colors ${
+                activeSection === 'overview' 
+                  ? 'bg-green-500 text-white' 
+                  : 'bg-gray-200 text-gray-700'
+              }`}
+            >
+              Game Overview
+            </button>
+            <button 
+              onClick={() => setActiveSection('login')}
+              className={`px-4 py-2 rounded-md transition-colors ${
+                activeSection === 'login' 
+                  ? 'bg-green-500 text-white' 
+                  : 'bg-gray-200 text-gray-700'
+              }`}
+            >
+              Login / Register
+            </button>
+          </div>
+
+          {activeSection === 'overview' ? (
+            <div>
+              <h2 className="text-2xl font-semibold mb-4 text-center">Comic Panel Preview</h2>
+              <ComicPanel panel={comicPanel} />
+            </div>
+          ) : (
+            <LoginForm />
+          )}
+        </motion.div>
+      </div>
+
+      {/* Quick Access Buttons */}
+      <motion.div
+        initial={{ y: 50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
+        className="mt-12 flex justify-center space-x-6"
+      >
+        {[
+          { 
+            href: '/farm', 
+            icon: <FarmIcon />, 
+            label: 'Start Farming',
+            color: 'bg-green-500'
+          },
+          { 
+            href: '/progression', 
+            icon: <TrophyIcon />, 
+            label: 'View Progression',
+            color: 'bg-purple-500'
+          },
+          { 
+            href: '/comic-panel', 
+            icon: <BookIcon />, 
+            label: 'Comic Panels',
+            color: 'bg-blue-500'
+          }
+        ].map((button, index) => (
+          <Link 
+            key={index} 
+            href={button.href}
+            className={`
+              ${button.color} text-white 
+              px-6 py-3 rounded-lg 
+              flex items-center space-x-2
+              hover:scale-105 transition-transform
+            `}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+            {button.icon}
+            <span>{button.label}</span>
+          </Link>
+        ))}
+      </motion.div>
+    </motion.main>
   );
 }

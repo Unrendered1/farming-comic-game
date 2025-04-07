@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Farming Comic Game Power-Up</title>
+    <script src="https://p.trellocdn.com/power-up.min.js"></script>
+</head>
+<body>
+    <script>
+        window.TrelloPowerUp.initialize({
+            'board-buttons': function(t, options){
+                return [{
+                    icon: {
+                        dark: './farm-icon-white.svg',
+                        light: './farm-icon-black.svg'
+                    },
+                    text: 'Farming Comic Game',
+                    callback: function(t){
+                        return t.modal({
+                            url: './game-modal.html',
+                            height: 500
+                        });
+                    }
+                }];
+            },
+            'card-badges': function(t, options){
+                return [{
+                    text: 'Game Progress',
+                    color: 'green',
+                    callback: function(t){
+                        // Logik zur Anzeige des Spielfortschritts
+                        return t.card('all')
+                            .then(function(card){
+                                return [{
+                                    text: 'Progress: 50%',
+                                    color: 'green'
+                                }];
+                            });
+                    }
+                }];
+            }
+        });
+    </script>
+</body>
+</html>

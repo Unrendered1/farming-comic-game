@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Farming Comic Game Details</title>
+    <script src="https://p.trellocdn.com/power-up.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .game-progress { display: flex; align-items: center; }
+        .progress-bar { 
+            width: 200px; 
+            height: 20px; 
+            background-color: #e0e0e0; 
+            border-radius: 10px; 
+            margin-left: 10px; 
+        }
+        .progress-bar-fill { 
+            height: 100%; 
+            background-color: #4CAF50; 
+            border-radius: 10px; 
+            width: 50%; 
+        }
+    </style>
+</head>
+<body>
+    <h2>Farming Comic Game Progress</h2>
+    <div class="game-progress">
+        <span>Overall Progress:</span>
+        <div class="progress-bar">
+            <div class="progress-bar-fill"></div>
+        </div>
+    </div>
+    <script>
+        var t = window.TrelloPowerUp.iframe();
+        
+        // Beispiel für Fortschrittsaktualisierung
+        function updateGameProgress(progress) {
+            document.querySelector('.progress-bar-fill').style.width = `${progress}%`;
+        }
+
+        // Initialer Aufruf
+        updateGameProgress(50);
+    </script>
+</body>
+</html>

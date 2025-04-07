@@ -1,0 +1,17 @@
+{
+    "name": "Farming Comic Game",
+    "details": "Projekt-Tracking und Spielfortschritt",
+    "icon": {
+        "url": "./farm-icon.svg"
+    },
+    "author": "Dein Name",
+    "capabilities": [
+        "board-buttons",
+        "card-badges"
+    ],
+    "connectors": {
+        "iframe": {
+            "url": "./index.html"
+        }
+    }
+}
